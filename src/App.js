@@ -1,4 +1,4 @@
-import{useState,useCallback,useMemo,useEffect}from  'react'
+import{useState,useCallback,useMemo,useEffect}from 'react'
 import*as XLSX from 'xlsx'
 import{supabase}from './lib/supabase'
 import{useAuth}from './lib/useAuth'
@@ -163,4 +163,73 @@ return(
 </>}
 </div>}
 {activeTab==='clientes'&&<div>
-{clients.length===0?<div style={{textAlign:'center',padding:'70px 20px',color:MUTED}}><div s
+{clients.length===0?<div style={{textAlign:'center',padding:'70px 20px',color:MUTED}}><div style={{fontSize:44,marginBottom:10}}>📂</div><div style={{fontWeight:700,fontSize:17,color:TEXT}}>Nenhuma planilha importada</div></div>
+:<><div style={{display:'flex',gap:10,marginBottom:14,alignItems:'center'}}>
+<input type="text" placeholder="🔍 Buscar cliente…" value={clientSearch} onChange={e=>setClientSearch(e.target.value)} style={{flex:1,border:`1px solid ${BORDER}`,borderRadius:8,padding:'9px 12px',fontSize:13}}/>
+<Badge color={ACCENT}>{filteredClients.length} clientes</Badge>
+</div>
+<div style={{background:CARD,border:`1px solid ${BORDER}`,borderRadius:14,overflow:'hidden'}}>
+<table style={{width:'100%',borderCollapse:'collapse',fontSize:13}}>
+<thead><tr style={{background:SURFACE}}>{['Cliente','Rota','Cadastro','Atendimento'].map(h=><th key={h} style={{padding:'10px 14px',textAlign:'left',fontWeight:600,fontSize:11,color:MUTED,borderBottom:`1px solid ${BORDER}`,textTransform:'uppercase'}}>{h}</th>)}</tr></thead>
+<tbody>{filteredClients.map((c,i)=><tr key={c.id} style={{borderBottom:`1px solid ${BORDER}`,background:c.inactive?'#FFF7ED':i%2===0?CARD:SURFACE}}>
+<td style={{padding:'10px 14px',fontWeight:600}}>{c.name}</td>
+<td style={{padding:'10px 14px'}}><Badge color={ACCENT}>{c.route}</Badge></td>
+<td style={{padding:'10px 14px'}}>{c.inactive?<Badge color={WARNING}>⛔ Inativo</Badge>:<Badge color={SUCCESS}>✓ Ativo</Badge>}</td>
+<td style={{padding:'10px 14px'}}>{soldClientIds.has(c.id)?<Badge color={SUCCESS}>✅ Vendido</Badge>:selectedRoute===c.route?<Badge color={MUTED}>⏳ Pendente</Badge>:<Badge color={MUTED}>—</Badge>}</td>
+</tr>)}</tbody>
+</table>
+</div></>}
+</div>}
+{activeTab==='vendas'&&<div>
+<div style={{background:CARD,border:`1px solid ${BORDER}`,borderRadius:14,padding:'18px 20px',marginBottom:16}}>
+<div style={{fontWeight:700,fontSize:15,marginBottom:14}}>💰 Registrar Venda</div>
+<div style={{display:'flex',gap:10,flexWrap:'wrap',alignItems:'flex-end'}}>
+<div style={{flex:2,minWidth:180,position:'relative'}}>
+<label style={{fontSize:11,fontWeight:600,color:MUTED,display:'block',marginBottom:4}}>CLIENTE {selectedRoute&&<span style={{color:ACCENT}}>— {selectedRoute}</span>}</label>
+<input type="text" placeholder={selectedRoute?`Buscar na ${selectedRoute}…`:'Selecione uma rota primeiro…'} value={tabSaleClientInput} disabled={!selectedRoute&&clients.length>0}
+onChange={e=>{setTabSaleClientInput(e.target.value);setTabSaleClient(null);setShowSuggestions(true)}}
+onFocus={()=>setShowSuggestions(true)} onBlur={()=>setTimeout(()=>setShowSuggestions(false),150)}
+style={{width:'100%',border:`1px solid ${BORDER}`,borderRadius:8,padding:'9px 10px',fontSize:13,boxSizing:'border-box'}}/>
+{showSuggestions&&clientSuggestions.length>0&&<div style={{position:'absolute',top:'100%',left:0,right:0,zIndex:100,background:CARD,border:`1px solid ${BORDER}`,borderRadius:8,boxShadow:'0 8px 24px #0002',marginTop:4,overflow:'hidden',maxHeight:240,overflowY:'auto'}}>
+<div style={{padding:'5px 12px',fontSize:11,fontWeight:700,color:MUTED,borderBottom:`1px solid ${BORDER}`,background:SURFACE,textTransform:'uppercase'}}>{clientSuggestions.length} cliente(s) na rota</div>
+{clientSuggestions.map(c=><div key={c.id} onMouseDown={()=>{setTabSaleClient(c);setTabSaleClientInput(c.name);setShowSuggestions(false)}}
+style={{padding:'9px 12px',cursor:'pointer',fontSize:13,display:'flex',alignItems:'center',gap:8,borderBottom:`1px solid ${BORDER}`}}
+onMouseEnter={e=>e.currentTarget.style.background=ACCENT_LIGHT}
+onMouseLeave={e=>e.currentTarget.style.background='transparent'}>
+<span style={{fontWeight:600}}>{c.name}</span>
+{c.inactive&&<Badge color={WARNING}>Inativo</Badge>}
+{soldClientIds.has(c.id)&&<Badge color={SUCCESS}>✅</Badge>}
+</div>)}
+</div>}
+</div>
+<div style={{flex:1,minWidth:110}}><label style={{fontSize:11,fontWeight:600,color:MUTED,display:'block',marginBottom:4}}>VALOR (R$)</label>
+<input type="number" placeholder="0,00" value={tabSaleValue} onChange={e=>setTabSaleValue(e.target.value)} onKeyDown={e=>e.key==='Enter'&&handleAddTabSale()} style={{width:'100%',border:`1px solid ${BORDER}`,borderRadius:8,padding:'9px 10px',fontSize:13,boxSizing:'border-box'}}/></div>
+<div style={{flex:2,minWidth:130}}><label style={{fontSize:11,fontWeight:600,color:MUTED,display:'block',marginBottom:4}}>OBSERVAÇÃO</label>
+<input type="text" placeholder="Opcional…" value={tabSaleNote} onChange={e=>setTabSaleNote(e.target.value)} style={{width:'100%',border:`1px solid ${BORDER}`,borderRadius:8,padding:'9px 10px',fontSize:13,boxSizing:'border-box'}}/></div>
+<button onClick={handleAddTabSale} style={{background:ACCENT,color:'#fff',border:'none',borderRadius:8,padding:'10px 20px',fontWeight:700,fontSize:13,cursor:'pointer',whiteSpace:'nowrap'}}>+ Registrar</button>
+</div>
+</div>
+{sales.length>0&&<div style={{display:'flex',gap:12,marginBottom:16,flexWrap:'wrap'}}>
+<KpiCard label="Total de Vendas" value={sales.length} sub="hoje"/>
+<KpiCard label="Receita Total" value={fmt(sales.reduce((a,s)=>a+s.value,0))} color={SUCCESS}/>
+<KpiCard label="Ticket Médio" value={fmt(sales.reduce((a,s)=>a+s.value,0)/sales.length)} color={ACCENT}/>
+</div>}
+{sales.length===0?<div style={{textAlign:'center',padding:'48px 20px',color:MUTED,background:CARD,border:`1px solid ${BORDER}`,borderRadius:14}}><div style={{fontSize:36,marginBottom:8}}>📋</div><div style={{fontWeight:700,color:TEXT}}>Nenhuma venda hoje</div></div>
+:<div style={{background:CARD,border:`1px solid ${BORDER}`,borderRadius:14,overflow:'hidden'}}>
+<table style={{width:'100%',borderCollapse:'collapse',fontSize:13}}>
+<thead><tr style={{background:SURFACE}}>{['Hora','Cliente','Rota','Valor','Obs.',''].map(h=><th key={h} style={{padding:'9px 14px',textAlign:'left',fontWeight:600,fontSize:11,color:MUTED,borderBottom:`1px solid ${BORDER}`,textTransform:'uppercase'}}>{h}</th>)}</tr></thead>
+<tbody>{[...sales].reverse().map((s,i)=><tr key={s.id} style={{borderBottom:`1px solid ${BORDER}`,background:i%2===0?CARD:SURFACE}}>
+<td style={{padding:'10px 14px',color:MUTED,fontWeight:600}}>{s.sale_time}</td>
+<td style={{padding:'10px 14px',fontWeight:600}}>{s.client_name}</td>
+<td style={{padding:'10px 14px'}}><Badge color={ACCENT}>{s.route}</Badge></td>
+<td style={{padding:'10px 14px'}}><Badge color={SUCCESS}>{fmt(s.value)}</Badge></td>
+<td style={{padding:'10px 14px',color:MUTED}}>{s.note||'—'}</td>
+<td style={{padding:'10px 14px'}}><button onClick={()=>handleRemoveSale(s.id)} style={{background:'none',border:'none',color:DANGER,cursor:'pointer',fontSize:14}}>✕</button></td>
+</tr>)}</tbody>
+</table>
+</div>}
+</div>}
+</div>
+</div>
+)
+}
