@@ -55,11 +55,19 @@ const handleRemoveSale=async(id)=>{const{error}=await supabase.from('sales').del
   const getSession=async()=>{const{data}=await supabase.auth.getSession();return data.session?.access_token||''}
 
 const buscarProdutos=async(search)=>{
-  if(search.length<2)return
-  const token=await getSession()
-  const res=await fetch(`${EGESTOR_API}?action=produtos&search=${encodeURIComponent(search)}`,{headers:{'Authorization':`Bearer ${token}`}})
-  const data=await res.json()
-  setPedidoResultados(Array.isArray(data)?data:[])
+  if(search.length<2){setPedidoResultados([]);return}
+  try{
+    const token=await getSession()
+    console.log('Token:',token?'ok':'vazio')
+    const res=await fetch(`${EGESTOR_API}?action=produtos&search=${encodeURIComponent(search)}`,{headers:{'Authorization':`Bearer ${token}`}})
+    console.log('Status:',res.status)
+    const data=await res.json()
+    console.log('Dados:',JSON.stringify(data))
+    setPedidoResultados(Array.isArray(data)?data:[])
+  }catch(err){
+    console.error('Erro:',err.message)
+    showToast('Erro ao buscar produtos','error')
+  }
 }
 
 const addProdutoPedido=(produto)=>{
