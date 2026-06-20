@@ -110,9 +110,14 @@ const confirmarPedido=async()=>{
       showToast(`Pedido #${result.codigo} criado no eGestor!`)
       setPedidoCliente(null);setPedidoProdutos([]);setPedidoFormaPgto('');setPedidoSituacao('Pedido S/ NFe')
       await loadSales()
-    }else{
-      showToast('Erro: '+JSON.stringify(result),'error')
-    }
+   }else{
+    showToast('Erro: '+JSON.stringify(result),'error')
+  }
+  }catch(err){
+    showToast('Erro ao criar pedido','error')
+  }
+  setPedidoLoading(false)
+}
   }catch(err){
     showToast('Erro ao criar pedido','error')
   }
