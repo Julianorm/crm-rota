@@ -115,22 +115,6 @@ return(<div style={{minHeight:'100vh',background:SURFACE,fontFamily:"'Inter',sys
 <div style={{padding:'12px 16px'}}>
 {toast&&<div style={{position:'fixed',top:60,left:16,right:16,zIndex:1000,background:toast.type==='error'?DANGER:SUCCESS,color:'#fff',borderRadius:10,padding:'12px 16px',fontWeight:600,fontSize:13,boxShadow:'0 4px 20px #0003',textAlign:'center'}}>{toast.type==='error'?'❌':'✅'} {toast.msg}</div>}
 <div style={{display:'flex',gap:8,marginBottom:12,flexWrap:'wrap'}}>
-<div style={{flex:'0 0 auto',position:'relative'}}>
-<label htmlFor="xl-input" style={{border:`2px dashed ${dragOver?ACCENT:BORDER}`,borderRadius:10,background:dragOver?ACCENT_LIGHT:CARD,padding:'8px 14px',display:'flex',alignItems:'center',gap:8,cursor:'pointer'}} onDrop={e=>{e.preventDefault();setDragOver(false);handleFile(e.dataTransfer.files[0])}} onDragOver={e=>{e.preventDefault();setDragOver(true)}} onDragLeave={()=>setDragOver(false)}>
-<span style={{fontSize:18}}>{loading?'⏳':'📂'}</span>
-<div><div style={{fontWeight:700,fontSize:12}}>{clients.length>0?`✓ ${clients.length} clientes`:'Importar'}</div><div style={{fontSize:10,color:MUTED}}>{clients.length>0?`${routes.length} rotas`:'Planilha Excel'}</div></div>
-<input id="xl-input" type="file" accept=".xlsx,.xls" onChange={e=>handleFile(e.target.files[0])} style={{position:'absolute',width:1,height:1,opacity:0}}/>
-</label>
-<button onClick={()=>setShowPaste(v=>!v)} style={{marginTop:4,width:'100%',background:'none',border:`1px solid ${BORDER}`,borderRadius:7,padding:'5px 8px',fontSize:10,fontWeight:600,color:ACCENT,cursor:'pointer'}}>📋 {showPaste?'Fechar':'Colar Dados'}</button>
-{showPaste&&<div style={{position:'absolute',top:'110%',left:0,zIndex:200,width:280,background:CARD,border:`1px solid ${BORDER}`,borderRadius:12,boxShadow:'0 8px 32px #0003',padding:12}}>
-<div style={{fontWeight:700,fontSize:12,marginBottom:6}}>📋 Colar dados</div>
-<textarea rows={6} value={pasteText} onChange={e=>setPasteText(e.target.value)} style={{width:'100%',border:`1px solid ${BORDER}`,borderRadius:8,padding:'8px',fontSize:11,fontFamily:'monospace',resize:'vertical',boxSizing:'border-box'}}/>
-<div style={{display:'flex',gap:8,marginTop:8}}>
-<button onClick={handlePaste} style={{flex:1,background:ACCENT,color:'#fff',border:'none',borderRadius:8,padding:'8px 0',fontWeight:700,fontSize:12,cursor:'pointer'}}>Importar</button>
-<button onClick={()=>{setShowPaste(false);setPasteText('')}} style={{background:SURFACE,color:MUTED,border:`1px solid ${BORDER}`,borderRadius:8,padding:'8px 10px',fontWeight:600,fontSize:12,cursor:'pointer'}}>✕</button>
-</div>
-</div>}
-</div>
 {routes.length>0&&<div style={{flex:1,minWidth:150,background:CARD,border:`1px solid ${BORDER}`,borderRadius:10,padding:'8px 12px'}}>
 <div style={{fontWeight:700,fontSize:11,marginBottom:3,color:MUTED}}>ROTA DO DIA</div>
 <select value={selectedRoute} onChange={e=>{setSelectedRoute(e.target.value);setDailyGoal('')}} style={{width:'100%',border:'none',background:'transparent',fontWeight:700,fontSize:13,color:TEXT,outline:'none'}}>
