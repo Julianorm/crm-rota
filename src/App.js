@@ -117,7 +117,15 @@ const ProdutoCard=({p,onChange,onRemove})=><div style={{background:SURFACE,borde
 return(<div style={{minHeight:'100vh',background:SURFACE,fontFamily:"'Inter',system-ui,sans-serif",color:TEXT,paddingBottom:72}}>
 <div style={{background:CARD,borderBottom:`1px solid ${BORDER}`,padding:'0 16px',position:'sticky',top:0,zIndex:100}}>
 <div style={{display:'flex',alignItems:'center',gap:8,height:52}}>
-dangerouslySetInnerHTML={{__html:`<svg viewBox="0 0 200 40" xmlns="http://www.w3.org/2000/svg" width="160" height="32"><circle cx="20" cy="20" r="18" fill="white"/><circle cx="20" cy="20" r="15" fill="#2563EB"/><polyline points="11,27 16,19 21,23 29,13" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><polygon points="26,10 32,12 30,18" fill="white"/><text x="44" y="27" font-family="Arial, sans-serif" font-size="21" font-weight="300" fill="#0F172A">e</text><text x="56" y="27" font-family="Arial, sans-serif" font-size="21" font-weight="900" fill="white" stroke="#2563EB" stroke-width="0.5">X</text><text x="70" y="27" font-family="Arial, sans-serif" font-size="21" font-weight="300" fill="#0F172A">pande</text></svg>`}}
+<svg viewBox="0 0 200 40" xmlns="http://www.w3.org/2000/svg" width="160" height="32" style={{flex:1}}>
+<circle cx="20" cy="20" r="18" fill="white"/>
+<circle cx="20" cy="20" r="15" fill="#2563EB"/>
+<polyline points="11,27 16,19 21,23 29,13" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+<polygon points="26,10 32,12 30,18" fill="white"/>
+<text x="44" y="27" fontFamily="Arial, sans-serif" fontSize="21" fontWeight="300" fill="#0F172A">e</text>
+<text x="56" y="27" fontFamily="Arial, sans-serif" fontSize="21" fontWeight="900" fill="white" stroke="#2563EB" strokeWidth="0.5">X</text>
+<text x="70" y="27" fontFamily="Arial, sans-serif" fontSize="21" fontWeight="300" fill="#0F172A">pande</text>
+</svg>
 <button onClick={()=>{loadClients();loadSales();loadOrders()}} style={{background:'none',border:`1px solid ${BORDER}`,borderRadius:8,padding:'4px 8px',fontSize:12,color:MUTED,cursor:'pointer'}}>🔄</button>
 <button onClick={()=>supabase.auth.signOut()} style={{background:'none',border:`1px solid ${BORDER}`,borderRadius:8,padding:'4px 8px',fontSize:11,color:MUTED,cursor:'pointer'}}>Sair</button>
 </div>
