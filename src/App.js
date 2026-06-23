@@ -444,4 +444,3 @@ onRemove={()=>setPedidoProdutos(prev=>prev.filter(x=>x.codigo!==p.codigo))}/>)}
 </div>
 </div>)
 }
-
