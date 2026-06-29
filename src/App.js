@@ -36,6 +36,7 @@ const[showPaste,setShowPaste]=useState(false)
 const[pasteText,setPasteText]=useState('')
 const[loading,setLoading]=useState(false)
 const[pedidoCliente,setPedidoCliente]=useState(null)
+const[pedidoClienteSearch,setPedidoClienteSearch]=useState('')
 const[pedidoProdutos,setPedidoProdutos]=useState([])
 const[pedidoSearch,setPedidoSearch]=useState('')
 const[pedidoResultados,setPedidoResultados]=useState([])
@@ -420,10 +421,21 @@ return<>
 <span style={{fontWeight:700,color:ACCENT,flex:1,fontSize:13}}>{pedidoCliente.name}</span>
 <button onClick={()=>setPedidoCliente(null)} style={{background:'none',border:'none',color:DANGER,cursor:'pointer',fontSize:16}}>✕</button>
 </div>
-:<select onChange={e=>{const c=clients.find(cl=>cl.id===e.target.value);setPedidoCliente(c||null)}} style={{width:'100%',border:`1px solid ${BORDER}`,borderRadius:8,padding:'10px 12px',fontSize:14,background:SURFACE,marginBottom:8}}>
-<option value="">Selecionar cliente…</option>
-{(selectedRoute?routeClients:clients).map(c=><option key={c.id} value={c.id}>{c.name}</option>)}
-</select>}
+:<div style={{position:'relative',marginBottom:8}}>
+<input type="text" placeholder="🔍 Buscar cliente…" value={pedidoClienteSearch||''} onChange={e=>setPedidoClienteSearch(e.target.value)}
+style={{width:'100%',border:`1px solid ${BORDER}`,borderRadius:8,padding:'10px 12px',fontSize:14,boxSizing:'border-box'}}/>
+{pedidoClienteSearch&&(selectedRoute?routeClients:clients).filter(c=>c.name.toLowerCase().includes(pedidoClienteSearch.toLowerCase())).length>0&&
+<div style={{position:'absolute',top:'100%',left:0,right:0,zIndex:100,background:CARD,border:`1px solid ${BORDER}`,borderRadius:8,boxShadow:'0 8px 24px #0002',marginTop:4,maxHeight:220,overflowY:'auto'}}>
+{(selectedRoute?routeClients:clients).filter(c=>c.name.toLowerCase().includes(pedidoClienteSearch.toLowerCase())).slice(0,8).map(c=>
+<div key={c.id} onMouseDown={()=>{setPedidoCliente(c);setPedidoClienteSearch('')}}
+style={{padding:'10px 14px',cursor:'pointer',borderBottom:`1px solid ${BORDER}`,fontSize:13}}
+onMouseEnter={e=>e.currentTarget.style.background=ACCENT_LIGHT}
+onMouseLeave={e=>e.currentTarget.style.background='transparent'}>
+<div style={{fontWeight:600}}>{c.name}</div>
+<div style={{fontSize:11,color:MUTED}}>{c.route}</div>
+</div>)}
+</div>}
+</div>}
 <select value={pedidoSituacao} onChange={e=>setPedidoSituacao(e.target.value)} style={{width:'100%',border:`1px solid ${BORDER}`,borderRadius:8,padding:'10px 12px',fontSize:14,background:SURFACE,marginBottom:8}}>
 <option>Pedido S/ NFe</option><option>Pedido C/ NFe</option><option>Bonificação</option><option>Troca</option>
 </select>
