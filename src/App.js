@@ -576,6 +576,7 @@ return<button key={dias} onClick={()=>setPedidoVencimento(dataVenc)} style={{fle
 <button onClick={()=>abrirEdicaoOrder(o)} style={{flex:1,background:SURFACE,border:`1px solid ${BORDER}`,borderRadius:7,padding:'7px 0',fontSize:12,fontWeight:600,color:TEXT,cursor:'pointer'}}>✏️ Editar</button>
 <button onClick={()=>gerarPdf(o)} style={{flex:1,background:'#EFF6FF',border:`1px solid ${ACCENT}33`,borderRadius:7,padding:'7px 0',fontSize:12,fontWeight:600,color:ACCENT,cursor:'pointer'}}>📄 PDF</button>
 <button onClick={()=>excluirPedido(o.id)} style={{flex:1,background:'#FEF2F2',border:`1px solid ${DANGER}33`,borderRadius:7,padding:'7px 0',fontSize:12,fontWeight:600,color:DANGER,cursor:'pointer'}}>🗑️ Excluir</button>
+</div>
 </div>)}
 <button onClick={exportarPedidos} disabled={exportLoading} style={{width:'100%',background:exportLoading?MUTED:SUCCESS,color:'#fff',border:'none',borderRadius:10,padding:'14px 0',fontWeight:800,fontSize:15,cursor:exportLoading?'not-allowed':'pointer',marginTop:4}}>
 {exportLoading?'Exportando…':'🚀 Exportar para eGestor'}
