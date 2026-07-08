@@ -91,8 +91,13 @@ useEffect(()=>{if(user?.id){loadClients();loadSales();loadOrders()}},[loadClient
 useEffect(()=>{loadGoal(selectedRoute)},[selectedRoute,loadGoal])
 useEffect(()=>{
   if(user?.id===ADMIN_ID&&adminVendedorId){
-    loadSales(adminVendedorId)
-    loadOrders(adminVendedorId)
+    const fetchAdminData=async()=>{
+      const{data:salesData}=await supabase.from('sales').select('*').eq('user_id',adminVendedorId).eq('date',today()).order('created_at')
+      setSales(salesData||[])
+      const{data:ordersData}=await supabase.from('orders').select('*').eq('user_id',adminVendedorId).eq('status','pendente').eq('date',today()).order('created_at')
+      setOrders(ordersData||[])
+    }
+    fetchAdminData()
   }
 },[adminVendedorId])
 const importClients=useCallback(async(rows)=>{if(!user?.id)return;setLoading(true);await supabase.from('clients').delete().eq('empresa_id','mageski');const toInsert=rows.map(cols=>({empresa_id:'mageski',name:String(cols[0]).trim(),route:String(cols[1]).trim(),inactive:cols[2]&&String(cols[2]).trim().toLowerCase()==='inativo'}));const{error}=await supabase.from('clients').insert(toInsert);if(error){showToast('Erro ao salvar clientes.','error');setLoading(false);return}await loadClients();setSales([]);setSelectedRoute('');setDailyGoal('');setLoading(false);showToast(`${toInsert.length} clientes importados!`)},[user?.id,loadClients])
