@@ -414,7 +414,7 @@ return<div key={prod.codigo} style={{background:noLista?ACCENT_LIGHT:SURFACE,bor
 </div>
 {activeTab==='dashboard'&&<div>
 {!selectedRoute?<div style={{textAlign:'center',padding:'60px 20px',color:MUTED}}><div style={{fontSize:48,marginBottom:12}}>🗺️</div><div style={{fontWeight:700,fontSize:16,color:TEXT}}>Selecione uma rota para começar</div></div>
-:(!dailyGoal||!dtEntrega)?<div style={{background:CARD,border:`1px solid ${BORDER}`,borderRadius:12,padding:'24px 16px',marginBottom:12}}>
+:(user?.id!==ADMIN_ID&&(!dailyGoal||!dtEntrega))?<div style={{background:CARD,border:`1px solid ${BORDER}`,borderRadius:12,padding:'24px 16px',marginBottom:12}}>
 <div style={{textAlign:'center',marginBottom:20}}>
 <div style={{fontSize:36,marginBottom:8}}>🌅</div>
 <div style={{fontWeight:800,fontSize:16,color:TEXT}}>Configurar o dia</div>
