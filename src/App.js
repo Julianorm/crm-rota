@@ -91,9 +91,9 @@ useEffect(()=>{if(user?.id){loadClients();loadSales();loadOrders()}},[loadClient
 useEffect(()=>{loadGoal(selectedRoute)},[selectedRoute,loadGoal])
 useEffect(()=>{
   console.log('adminVendedorId mudou:', adminVendedorId)
-  if(user?.id===ADMIN_ID&&adminVendedorId){
+  if(adminVendedorId){
     const fetchAdminData=async()=>{
-  console.log('fetchAdminData chamado para:', adminVendedorId)
+      console.log('fetchAdminData chamado para:', adminVendedorId)
       const{data:salesData}=await supabase.from('sales').select('*').eq('user_id',adminVendedorId).eq('date',today()).order('created_at')
       setSales(salesData||[])
       const{data:ordersData}=await supabase.from('orders').select('*').eq('user_id',adminVendedorId).eq('status','pendente').eq('date',today()).order('created_at')
